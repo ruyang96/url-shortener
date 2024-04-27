@@ -24,7 +24,7 @@ public class UrlShortenerController implements UrlShortenerApi {
 
     @Override
     public ResponseEntity<UrlShorteningResponse> createShortenedUrl(UrlShorteningPayload urlShorteningPayload) {
-        return ResponseEntity.ok(urlShortenerService.createShortenedUrl(urlShorteningPayload));
+        return ResponseEntity.ok(urlShortenerService.createShortenedUrl(urlShorteningPayload.getOriginalUrl()));
     }
 
     @Override

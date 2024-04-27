@@ -1,10 +1,9 @@
 package com.ruyang.urlshortener.service;
 
-import com.ruyang.generated.model.UrlShorteningPayload;
 import com.ruyang.generated.model.UrlShorteningResponse;
 import com.ruyang.generated.model.User;
 import com.ruyang.generated.model.UserCredentials;
-import com.ruyang.urlshortener.auth.JwtUtil;
+import com.ruyang.urlshortener.utils.JwtUtil;
 import com.ruyang.urlshortener.exception.UrlShortenerErrorCode;
 import com.ruyang.urlshortener.exception.UrlShortenerException;
 import com.ruyang.urlshortener.repository.UserRepository;
@@ -20,7 +19,7 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
     private final ModelMapper modelMapper;
 
     @Override
-    public UrlShorteningResponse createShortenedUrl(UrlShorteningPayload urlShorteningPayload) {
+    public UrlShorteningResponse createShortenedUrl(String originalUrl) {
         return null;
     }
 
