@@ -11,14 +11,17 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 
 import java.io.IOException;
 
 import static com.ruyang.urlshortener.utils.ConverterUtil.createErrorfromErrorCode;
 
+@AllArgsConstructor
 public class AuthFilter implements Filter {
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private JwtUtil jwtUtil;
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
@@ -29,7 +32,7 @@ public class AuthFilter implements Filter {
             return;
         }
         try {
-            JwtUtil.validateToken(token);
+            jwtUtil.validateToken(token);
         } catch (Exception e) {
             UrlShortenerException exception = (UrlShortenerException) e;
             handleAuthorizationError((HttpServletResponse) servletResponse, exception.getErrorCode());

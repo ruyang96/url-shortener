@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public class UrlShortenerServiceImpl implements UrlShortenerService {
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final JwtUtil jwtUtil;
 
     @Override
     public UrlShorteningResponse createShortenedUrl(String originalUrl) {
@@ -29,7 +30,7 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
         if(userRepository.findUserByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword())==null){
             throw new UrlShortenerException(UrlShortenerErrorCode.URL_SHORTENER_0002);
         }
-        return JwtUtil.generateToken(userDTO.getEmail());
+        return jwtUtil.generateToken(userDTO.getEmail());
     }
 
     @Override
