@@ -8,7 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Url")
+@Table(name = "Urls")
 public class UrlDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

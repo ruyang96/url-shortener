@@ -16,6 +16,8 @@ public class UrlShortenerExceptionHandler extends ResponseEntityExceptionHandler
         UrlShortenerErrorCode errorCode = UrlShortenerErrorCode.URL_SHORTENER_9999;
         if(ex instanceof UrlShortenerException urlShortenerException){
             errorCode = urlShortenerException.getErrorCode();
+        } else {
+            logger.error(String.format("Unknow error happened. %s", ex.getMessage()));
         }
         return super.handleExceptionInternal(ex, createErrorfromErrorCode(errorCode), new HttpHeaders(), errorCode.getStatus(), webRequest);
     }

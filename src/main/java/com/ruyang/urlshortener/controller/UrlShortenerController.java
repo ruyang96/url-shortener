@@ -5,7 +5,7 @@ import com.ruyang.generated.model.UrlShorteningPayload;
 import com.ruyang.generated.model.UrlShorteningResponse;
 import com.ruyang.generated.model.User;
 import com.ruyang.generated.model.UserCredentials;
-import com.ruyang.urlshortener.service.UrlShortenerServiceImpl;
+import com.ruyang.urlshortener.service.UrlShortenerService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,26 +15,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("api")
 @AllArgsConstructor
 public class UrlShortenerController implements UrlShortenerApi {
-    private final UrlShortenerServiceImpl urlShortenerServiceImpl;
+    private final UrlShortenerService urlShortenerService;
 
     @Override
     public ResponseEntity<String> authenticateUser(UserCredentials userCredentials) {
-        return ResponseEntity.ok(urlShortenerServiceImpl.authenticateUser(userCredentials));
+        return ResponseEntity.ok(urlShortenerService.authenticateUser(userCredentials));
     }
 
     @Override
     public ResponseEntity<UrlShorteningResponse> createShortenedUrl(UrlShorteningPayload urlShorteningPayload) {
-        return ResponseEntity.ok(urlShortenerServiceImpl.createShortenedUrl(urlShorteningPayload));
+        return ResponseEntity.ok(urlShortenerService.createShortenedUrl(urlShorteningPayload));
     }
 
     @Override
     public ResponseEntity<Void> getOriginalUrl(String urlId) {
-        urlShortenerServiceImpl.getOriginalUrl();
+        urlShortenerService.getOriginalUrl();
         return ResponseEntity.noContent().build();
     }
 
     @Override
     public ResponseEntity<User> registerUser(UserCredentials userCredentials) {
-        return ResponseEntity.ok(urlShortenerServiceImpl.registerUser(userCredentials));
+        return ResponseEntity.ok(urlShortenerService.registerUser(userCredentials));
     }
 }
