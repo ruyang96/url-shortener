@@ -1,0 +1,212 @@
+openapi: 3.0.3
+info:
+  title: Url shortener API
+  description: |-
+    
+    ## Introduction
+    APIs for interacting with Url shortener APIs.
+    
+    ## Usage
+    **Let users register a new account**
+    
+    Use service ```POST /user/new``` to allow users to create a new account
+    
+    **Let users authenticate themselves with the credential information they provide**
+    
+    Use service ```POST /user/auth``` to let users authenticate themselves with the credential information they provide.
+    If authenticating successfully, an auth token will be returned.
+    
+    **Let authenticated users create shortened urls**
+    
+    Use service ```POST /url/shorten``` to let authenticated users create shortened urls.
+    
+    **Let any user use shortened urls**
+    
+    Use service ```GET /url/{urlId}}``` to let any users use shortened urls.
+    
+    ## Change Log
+      <table>
+        <tr>
+          <th align="left">Version</th>
+          <th align="left">Change Description</th>
+        </tr>
+        <tr>
+          <td>v1.0.0</td>
+          <td>Initial version</td>
+        </tr>
+      </table>
+  version: 1.0.0
+servers:
+  - url: /api
+    description: Base path for all APIs
+tags:
+  - name: UrlShortener
+paths:
+  /user/new:
+    post:
+      tags:
+        - UrlShortener
+      summary: Register a new account for user
+      operationId: registerUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /user/auth:
+    post:
+      tags:
+        - UrlShortener
+      summary: Authenticate a user and return auth token
+      operationId: authenticateUser
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCredentials'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: eyJhbGciOiJIUzI1NiI
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /url/shorten:
+    post:
+      tags:
+        - UrlShortener
+      security:
+        - bearerAuth: [ ]
+      summary: Create a shorten Url
+      operationId: createShortenedUrl
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UrlShorteningPayload'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UrlShorteningResponse'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /url/{urlId}:
+    get:
+      tags:
+        - UrlShortener
+      summary: Get original url from a urlId
+      operationId: getOriginalUrl
+      parameters:
+        - name: urlId
+          in: path
+          required: true
+          description: converted url id used for finding the original url in database
+          schema:
+            type: string
+            example: f73wlk
+      responses:
+        '201':
+          description: No content
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      required:
+        - id
+        - email
+      properties:
+        id:
+          type: string
+          example: '1234'
+        email:
+          type: string
+          example: 'test@mail.com'
+        createdAt:
+          type: string
+          format: datetime
+          example: '2025-09-20'
+    UserCredentials:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          example: 'test@mail.com'
+        password:
+          type: string
+          example: 'password!'
+    UrlShorteningPayload:
+      type: object
+      required:
+        - originalUrl
+      properties:
+        originalUrl:
+          type: string
+          example: www.google.com/examples/of/a/very/long url/
+    UrlShorteningResponse:
+      type: object
+      properties:
+        originalUrl:
+          type: string
+          example: www.google.com/examples/of/a/very/long url/
+        shortenedUrl:
+          type: string
+          example: example.com/url/ui7uyp
+    Error:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP error code
+          example: 404
+        code:
+          type: string
+          description: API error code to identify a type of error
+          example: URL-0001
+        message:
+          type: string
+          description: Error message
+          example: example error message
+  responses:
+    UnauthorizedError:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
