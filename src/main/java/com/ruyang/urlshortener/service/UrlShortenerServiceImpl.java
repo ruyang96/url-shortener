@@ -1,13 +1,20 @@
 package com.ruyang.urlshortener.service;
 
+import com.ruyang.generated.model.HttpHateoasLink;
+import com.ruyang.generated.model.HttpVerb;
+import com.ruyang.generated.model.UrlShorteningPayload;
 import com.ruyang.generated.model.UrlShorteningResponse;
+import com.ruyang.generated.model.UrlShorteningResponseLinks;
 import com.ruyang.generated.model.User;
 import com.ruyang.generated.model.UserCredentials;
-import com.ruyang.urlshortener.utils.JwtUtil;
 import com.ruyang.urlshortener.exception.UrlShortenerErrorCode;
 import com.ruyang.urlshortener.exception.UrlShortenerException;
+import com.ruyang.urlshortener.repository.UrlRepository;
 import com.ruyang.urlshortener.repository.UserRepository;
+import com.ruyang.urlshortener.repository.model.UrlDTO;
 import com.ruyang.urlshortener.repository.model.UserDTO;
+import com.ruyang.urlshortener.utils.Base62Encoder;
+import com.ruyang.urlshortener.utils.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -16,18 +23,24 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 public class UrlShortenerServiceImpl implements UrlShortenerService {
     private final UserRepository userRepository;
+    private final UrlRepository urlRepository;
     private final ModelMapper modelMapper;
     private final JwtUtil jwtUtil;
 
     @Override
-    public UrlShorteningResponse createShortenedUrl(String originalUrl) {
-        return null;
+    public UrlShorteningResponse createShortenedUrl(UrlShorteningPayload urlShorteningPayload) {
+        UrlDTO urlDTO = urlRepository.save(modelMapper.map(urlShorteningPayload, UrlDTO.class));
+        String shortUrl = Base62Encoder.encode(urlDTO.getId());
+        return new UrlShorteningResponse()
+                .shortenedUrl(shortUrl)
+                .originalUrl(urlShorteningPayload.getOriginalUrl())
+                .links(getLinks(shortUrl));
     }
 
     @Override
     public String authenticateUser(UserCredentials userCredentials) {
         UserDTO userDTO = convertUserCredentials(userCredentials);
-        if(userRepository.findUserByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword())==null){
+        if (userRepository.findUserByEmailAndPassword(userDTO.getEmail(), userDTO.getPassword()) == null) {
             throw new UrlShortenerException(UrlShortenerErrorCode.URL_SHORTENER_0002);
         }
         return jwtUtil.generateToken(userDTO.getEmail());
@@ -53,5 +66,14 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
         userDTO.setEmail(userCredentials.getEmail());
         userDTO.setPassword(String.valueOf(userCredentials.getPassword().hashCode()));
         return userDTO;
+    }
+
+    private UrlShorteningResponseLinks getLinks(String shortUrl) {
+        UrlShorteningResponseLinks urlShorteningResponseLinks = new UrlShorteningResponseLinks();
+        HttpHateoasLink httpHateoasLink = new HttpHateoasLink()
+                .addVerbsItem(HttpVerb.GET)
+                .href(String.format("/api/url/%s", shortUrl));
+        urlShorteningResponseLinks.setGetUrl(httpHateoasLink);
+        return urlShorteningResponseLinks;
     }
 }

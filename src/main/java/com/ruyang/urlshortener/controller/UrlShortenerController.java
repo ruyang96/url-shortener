@@ -24,12 +24,12 @@ public class UrlShortenerController implements UrlShortenerApi {
 
     @Override
     public ResponseEntity<UrlShorteningResponse> createShortenedUrl(UrlShorteningPayload urlShorteningPayload) {
-        return ResponseEntity.ok(urlShortenerService.createShortenedUrl(urlShorteningPayload.getOriginalUrl()));
+        return ResponseEntity.ok(urlShortenerService.createShortenedUrl(urlShorteningPayload));
     }
 
     @Override
     public ResponseEntity<Void> getOriginalUrl(String urlId) {
-        urlShortenerService.getOriginalUrl();
+        urlShortenerService.getOriginalUrl(urlId);
         return ResponseEntity.noContent().build();
     }
 

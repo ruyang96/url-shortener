@@ -181,7 +181,37 @@ components:
           example: www.google.com/examples/of/a/very/long url/
         shortenedUrl:
           type: string
-          example: example.com/url/ui7uyp
+          example: fiu8lk
+        links:
+          type: object
+          properties:
+            getUrl:
+              $ref: '#/components/schemas/HttpHateoasLink'
+    HttpHateoasLink:
+      type: object
+      properties:
+        href:
+          type: string
+          description: relative URL path
+          example: /url/fiu8lk
+        verbs:
+          type: array
+          description: HTTP verbs valid for the link
+          items:
+            $ref: '#/components/schemas/HttpVerb'
+    HttpVerb:
+      type: string
+      title: HttpVerb
+      enum:
+        - GET
+        - PUT
+        - PATCH
+        - POST
+        - DELETE
+        - OPTIONS
+        - HEAD
+        - TRACE
+      example: GET
     Error:
       type: object
       properties:
