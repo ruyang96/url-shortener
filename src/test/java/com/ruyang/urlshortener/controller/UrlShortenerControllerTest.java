@@ -1,4 +1,4 @@
-package com.ruyang.urlshortener.Controller;
+package com.ruyang.urlshortener.controller;
 
 import com.ruyang.generated.model.UrlShorteningPayload;
 import com.ruyang.generated.model.UrlShorteningResponse;
