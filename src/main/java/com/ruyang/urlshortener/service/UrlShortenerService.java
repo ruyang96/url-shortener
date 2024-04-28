@@ -8,6 +8,6 @@ import com.ruyang.generated.model.UserCredentials;
 public interface UrlShortenerService {
     UrlShorteningResponse createShortenedUrl(UrlShorteningPayload urlShorteningPayload);
     String authenticateUser(UserCredentials userCredentials);
-    void getOriginalUrl(String urlId);
+    String getOriginalUrl(String urlId);
     User registerUser(UserCredentials userCredentials);
 }

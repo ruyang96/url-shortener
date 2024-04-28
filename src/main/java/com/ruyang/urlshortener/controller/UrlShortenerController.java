@@ -7,9 +7,12 @@ import com.ruyang.generated.model.User;
 import com.ruyang.generated.model.UserCredentials;
 import com.ruyang.urlshortener.service.UrlShortenerService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("api")
@@ -29,8 +32,8 @@ public class UrlShortenerController implements UrlShortenerApi {
 
     @Override
     public ResponseEntity<Void> getOriginalUrl(String urlId) {
-        urlShortenerService.getOriginalUrl(urlId);
-        return ResponseEntity.noContent().build();
+        String originalUrl = urlShortenerService.getOriginalUrl(urlId);
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build();
     }
 
     @Override

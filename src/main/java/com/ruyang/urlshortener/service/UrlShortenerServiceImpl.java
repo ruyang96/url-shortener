@@ -7,6 +7,7 @@ import com.ruyang.generated.model.UrlShorteningResponse;
 import com.ruyang.generated.model.UrlShorteningResponseLinks;
 import com.ruyang.generated.model.User;
 import com.ruyang.generated.model.UserCredentials;
+import com.ruyang.urlshortener.config.CacheConfig;
 import com.ruyang.urlshortener.exception.UrlShortenerErrorCode;
 import com.ruyang.urlshortener.exception.UrlShortenerException;
 import com.ruyang.urlshortener.repository.UrlRepository;
@@ -17,6 +18,7 @@ import com.ruyang.urlshortener.utils.Base62Encoder;
 import com.ruyang.urlshortener.utils.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,8 +49,11 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
     }
 
     @Override
-    public void getOriginalUrl() {
-
+    @Cacheable(value = CacheConfig.SHORTURL_CACHE, key = "#urlId")
+    public String getOriginalUrl(String urlId) {
+        Long id = Base62Encoder.decode(urlId);
+        UrlDTO urlDTO = urlRepository.findById(id).orElseThrow(() -> new UrlShortenerException(UrlShortenerErrorCode.URL_SHORTENER_0007));
+        return urlDTO.getOriginalUrl();
     }
 
     @Override
