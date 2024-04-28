@@ -32,6 +32,7 @@ public class AuthFilter implements Filter {
             return;
         }
         try {
+            token = token.replace("Bearer ","");
             jwtUtil.validateToken(token);
         } catch (Exception e) {
             UrlShortenerException exception = (UrlShortenerException) e;

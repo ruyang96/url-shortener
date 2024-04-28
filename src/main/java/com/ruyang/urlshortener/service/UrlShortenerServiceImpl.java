@@ -31,11 +31,15 @@ public class UrlShortenerServiceImpl implements UrlShortenerService {
 
     @Override
     public UrlShorteningResponse createShortenedUrl(UrlShorteningPayload urlShorteningPayload) {
+        String originalUrl = urlShorteningPayload.getOriginalUrl();
+        if (originalUrl.isEmpty()) {
+            throw new UrlShortenerException(UrlShortenerErrorCode.URL_SHORTENER_0008);
+        }
         UrlDTO urlDTO = urlRepository.save(modelMapper.map(urlShorteningPayload, UrlDTO.class));
         String shortUrl = Base62Encoder.encode(urlDTO.getId());
         return new UrlShorteningResponse()
                 .shortenedUrl(shortUrl)
-                .originalUrl(urlShorteningPayload.getOriginalUrl())
+                .originalUrl(urlDTO.getOriginalUrl())
                 .links(getLinks(shortUrl));
     }
 

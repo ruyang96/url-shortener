@@ -12,7 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
+import static com.ruyang.urlshortener.utils.ConverterUtil.getUri;
 
 @RestController
 @RequestMapping("api")
@@ -33,7 +33,7 @@ public class UrlShortenerController implements UrlShortenerApi {
     @Override
     public ResponseEntity<Void> getOriginalUrl(String urlId) {
         String originalUrl = urlShortenerService.getOriginalUrl(urlId);
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(originalUrl)).build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(getUri(originalUrl)).build();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.ruyang.urlshortener.utils;
 
+import com.ruyang.urlshortener.exception.UrlShortenerErrorCode;
 import com.ruyang.urlshortener.exception.UrlShortenerException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,8 @@ class Base62EncoderTest {
 
     @Test
     void testEncoderWithNegativeValue(){
-        Assertions.assertThrows(UrlShortenerException.class, () -> Base62Encoder.encode(-1000));
+        UrlShortenerException exception = Assertions.assertThrows(UrlShortenerException.class, () -> Base62Encoder.encode(-1000));
+        Assertions.assertEquals(UrlShortenerErrorCode.URL_SHORTENER_0006, exception.getErrorCode());
     }
 
     @Test
@@ -41,7 +43,8 @@ class Base62EncoderTest {
 
     @Test
     void testDecoderWithInvalidValue(){
-        Assertions.assertThrows(UrlShortenerException.class, () -> Base62Encoder.decode("??!!"));
+        UrlShortenerException exception = Assertions.assertThrows(UrlShortenerException.class, () -> Base62Encoder.decode("??!!"));
+        Assertions.assertEquals(UrlShortenerErrorCode.URL_SHORTENER_0006, exception.getErrorCode());
     }
 
 }

@@ -14,6 +14,7 @@ public enum UrlShortenerErrorCode {
     URL_SHORTENER_0005("URL_SHORTENER_0005", "Auth token has expired", HttpStatus.UNAUTHORIZED),
     URL_SHORTENER_0006("URL_SHORTENER_0006", "Internal server error with encoded ID", HttpStatus.INTERNAL_SERVER_ERROR),
     URL_SHORTENER_0007("URL_SHORTENER_0007", "Invalid short url", HttpStatus.BAD_REQUEST),
+    URL_SHORTENER_0008("URL_SHORTENER_0008", "Please provide the original url to be shortened", HttpStatus.BAD_REQUEST),
 
     URL_SHORTENER_9999("URL_SHORTENER_9999", "Unknown error at Url shortener", HttpStatus.INTERNAL_SERVER_ERROR);
 
